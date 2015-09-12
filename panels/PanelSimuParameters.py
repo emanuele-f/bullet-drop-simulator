@@ -56,5 +56,10 @@ class PanelSimuParameters(wx.Panel):
     def SetVelocityAndAngle(self, v0, angle):
         self.v0.SetValue("%.1f" % v0)
         self.angle.SetValue("%.2f" % angle)
+        
+    def GetVelocityAndAngle(self):
+        v0 = float(self.v0.GetValue())
+        teta = float(self.angle.GetValue())
+        return (v0, teta)
 
 __all__ = ["PanelSimuParameters"]

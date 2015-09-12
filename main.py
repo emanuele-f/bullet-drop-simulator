@@ -22,18 +22,21 @@
 # TODO
 #   - Import and parse initial obstacles
 
+import time
 import wx
 
 from panels import PanelObstaclesCtrl
 from panels import PanelSimuParameters
 from panels import PanelSimuStatus
 from panels import PanelSimulation
+from structures import Simulation
+from utils import *
 from constraints import *
 
 class BulletSimu(wx.App):
     def __init__(self, **kargs):
         super(BulletSimu, self).__init__(**kargs)
-        self.simulating = False
+        self.simulation = Simulation()
         
     def OnInit(self):
         self.frame = BulletSimuFrame()
@@ -47,11 +50,15 @@ class BulletSimu(wx.App):
         
     def OnSimulationButton(self, event):
         button = event.GetEventObject()
-        if not self.simulating:
-            self.simulating = True
+        curtime = time.time()
+        
+        if not self.simulation.IsRunning():
+            v0_angle = self.frame.panelParams.GetVelocityAndAngle()
+            self.simulation.InitFromVelocityAndAngle(v0_angle[0], ToRadians(v0_angle[1]))
+            self.simulation.Start(curtime)
             button.SetLabel("Stop")
         else:
-            self.simulating = False
+            self.simulation.Stop(curtime)
             button.SetLabel("Start")
         
 class BulletSimuFrame(wx.Frame):
