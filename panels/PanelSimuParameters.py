@@ -32,15 +32,19 @@ class PanelSimuParameters(wx.Panel):
         self.maxRange.SetEditable(False)
         
         # Table sizer
-        ts = wx.GridSizer(rows=4, cols=2)
+        ts = wx.GridSizer(rows=4, cols=3)
         ts.Add(wx.StaticText(self, label="angolo"))
         ts.Add(self.angle)
+        ts.Add(wx.StaticText(self, label="gradi"))
         ts.Add(wx.StaticText(self, label="velocità"))
         ts.Add(self.v0)
+        ts.Add(wx.StaticText(self, label="u/s"))
         ts.Add(wx.StaticText(self, label="gittata corrente"))
         ts.Add(self.curRange)
+        ts.Add(wx.StaticText(self, label="u"))
         ts.Add(wx.StaticText(self, label="gittata massima"))
         ts.Add(self.maxRange)
+        ts.Add(wx.StaticText(self, label="u"))
         
         # Outer box
         box = wx.StaticBox(self, label="Parametri di simulazione")

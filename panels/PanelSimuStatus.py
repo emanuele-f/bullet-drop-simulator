@@ -33,17 +33,22 @@ class PanelSimuStatus(wx.Panel):
         self.t = wx.StaticText(self)
         
         # Table sizer
-        ts = wx.GridSizer(rows=5, cols=2)
+        ts = wx.GridSizer(rows=5, cols=3)
         ts.Add(wx.StaticText(self, label="Velocità x"))
         ts.Add(self.vx)
+        ts.Add(wx.StaticText(self, label="u/s"))
         ts.Add(wx.StaticText(self, label="Velocità y"))
         ts.Add(self.vy)
+        ts.Add(wx.StaticText(self, label="u/s"))
         ts.Add(wx.StaticText(self, label="X"))
         ts.Add(self.x)
+        ts.Add(wx.StaticText(self, label="u"))
         ts.Add(wx.StaticText(self, label="Y"))
         ts.Add(self.y)
+        ts.Add(wx.StaticText(self, label="u"))
         ts.Add(wx.StaticText(self, label="Tempo"))
         ts.Add(self.t)
+        ts.Add(wx.StaticText(self, label="s"))
 
         # Main sizer
         sizer = wx.BoxSizer(wx.VERTICAL)
