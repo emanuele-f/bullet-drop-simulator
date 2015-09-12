@@ -43,7 +43,6 @@ class BulletSimuFrame(wx.Frame):
         sizer.Add(self.panelObstacles, flag=wx.EXPAND)
         sizer.AddGrowableCol(1)
         sizer.AddGrowableRow(0)
-        sizer.Layout()
         self.SetSizer(sizer)
 
 if __name__ == '__main__':

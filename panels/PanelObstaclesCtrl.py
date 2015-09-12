@@ -11,10 +11,6 @@ class PanelObstaclesCtrl(wx.Panel):
         self.y = wx.TextCtrl(self)
         self.width = wx.TextCtrl(self)
         self.height = wx.TextCtrl(self)
-        self.lb_x = wx.StaticText(self, label="x")
-        self.lb_y = wx.StaticText(self, label="y")
-        self.lb_width = wx.StaticText(self, label="larghezza")
-        self.lb_height = wx.StaticText(self, label="altezza")
         
         # Horizontal sizer
         hs = wx.BoxSizer(wx.HORIZONTAL)
@@ -24,13 +20,13 @@ class PanelObstaclesCtrl(wx.Panel):
         
         # Table sizer
         ts = wx.GridSizer(rows=4, cols=2)
-        ts.Add(self.lb_x)
+        ts.Add(wx.StaticText(self, label="x"))
         ts.Add(self.x)
-        ts.Add(self.lb_y)
+        ts.Add(wx.StaticText(self, label="y"))
         ts.Add(self.y)
-        ts.Add(self.lb_width)
+        ts.Add(wx.StaticText(self, label="larghezza"))
         ts.Add(self.width)
-        ts.Add(self.lb_height)
+        ts.Add(wx.StaticText(self, label="altezza"))
         ts.Add(self.height)
         
         sizer = wx.BoxSizer(wx.VERTICAL)
