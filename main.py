@@ -28,7 +28,7 @@ from panels import PanelObstaclesCtrl
 from panels import PanelSimuParameters
 from panels import PanelSimuStatus
 from panels import PanelSimulation
-from Constraints import *
+from constraints import *
 
 class BulletSimu(wx.App):
     def __init__(self, **kargs):
