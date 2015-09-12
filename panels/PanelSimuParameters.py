@@ -48,5 +48,9 @@ class PanelSimuParameters(wx.Panel):
         bs.Add(ts)
         
         self.SetSizer(bs)
+        
+    def SetVelocityAndAngle(self, v0, angle):
+        self.v0.SetValue("%.1f" % v0)
+        self.angle.SetValue("%.2f" % angle)
 
 __all__ = ["PanelSimuParameters"]

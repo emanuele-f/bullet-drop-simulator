@@ -19,12 +19,16 @@
 #  MA 02110-1301, USA.
 #
 
+# TODO
+#   - Import and parse initial obstacles
+
 import wx
 
 from panels import PanelObstaclesCtrl
 from panels import PanelSimuParameters
 from panels import PanelSimuStatus
 from panels import PanelSimulation
+from Constraints import *
 
 class BulletSimu(wx.App):
     def __init__(self, **kargs):
@@ -35,6 +39,7 @@ class BulletSimu(wx.App):
         self.frame = BulletSimuFrame()
         
         self.frame.panelStatus.BindStart(self.OnSimulationButton)
+        self.frame.panelParams.SetVelocityAndAngle(INITIAL_VELOCITY, INITIAL_ANGLE)
         
         self.frame.Center()
         self.frame.Show()
