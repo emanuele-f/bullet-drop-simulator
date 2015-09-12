@@ -19,7 +19,12 @@
 #  MA 02110-1301, USA.
 #
 
-from PanelSimuParameters import PanelSimuParameters
-from PanelObstaclesCtrl import PanelObstaclesCtrl
-from PanelSimuStatus import PanelSimuStatus
-from PanelSimulation import PanelSimulation
+import wx
+
+class PanelSimulation(wx.Panel):
+    def __init__(self, parent, **kargs):
+        super(PanelSimulation, self).__init__(parent, **kargs)
+        
+        self.SetSizeHints(600,400,600,400)
+
+__all__ = ["PanelSimulation"]
