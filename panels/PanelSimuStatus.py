@@ -21,32 +21,40 @@
 
 import wx
 
-class PanelSimuParameters(wx.Panel):
+class PanelSimuStatus(wx.Panel):
     def __init__(self, parent, **kargs):
-        super(PanelSimuParameters, self).__init__(parent, **kargs)
+        super(PanelSimuStatus, self).__init__(parent, **kargs)
         
-        self.angle = wx.TextCtrl(self)
-        self.v0 = wx.TextCtrl(self)
-        self.curRange = wx.TextCtrl(self)
-        self.maxRange = wx.TextCtrl(self)
-        self.maxRange.SetEditable(False)
+        self.startBt = wx.Button(self, label="Start")
+        self.vx = wx.StaticText(self)
+        self.vy = wx.StaticText(self)
+        self.x = wx.StaticText(self)
+        self.y = wx.StaticText(self)
+        self.t = wx.StaticText(self)
         
         # Table sizer
-        ts = wx.GridSizer(rows=4, cols=2)
-        ts.Add(wx.StaticText(self, label="angolo"))
-        ts.Add(self.angle)
-        ts.Add(wx.StaticText(self, label="velocità"))
-        ts.Add(self.v0)
-        ts.Add(wx.StaticText(self, label="gittata corrente"))
-        ts.Add(self.curRange)
-        ts.Add(wx.StaticText(self, label="gittata massima"))
-        ts.Add(self.maxRange)
+        ts = wx.GridSizer(rows=5, cols=2)
+        ts.Add(wx.StaticText(self, label="Velocità x"))
+        ts.Add(self.vx)
+        ts.Add(wx.StaticText(self, label="Velocità y"))
+        ts.Add(self.vy)
+        ts.Add(wx.StaticText(self, label="X"))
+        ts.Add(self.x)
+        ts.Add(wx.StaticText(self, label="Y"))
+        ts.Add(self.y)
+        ts.Add(wx.StaticText(self, label="Tempo"))
+        ts.Add(self.t)
+
+        # Main sizer
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.startBt)
+        sizer.Add(ts)
         
         # Outer box
-        box = wx.StaticBox(self, label="Parametri di simulazione")
+        box = wx.StaticBox(self, label="Stato simulazione")
         bs = wx.StaticBoxSizer(box)
-        bs.Add(ts)
+        bs.Add(sizer)
         
         self.SetSizer(bs)
 
-__all__ = ["PanelSimuParameters"]
+__all__ = ["PanelSimuStatus"]

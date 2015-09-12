@@ -23,6 +23,7 @@ import wx
 
 from panels import PanelObstaclesCtrl
 from panels import PanelSimuParameters
+from panels import PanelSimuStatus
 
 class BulletSimu(wx.App):
     def OnInit(self):
@@ -37,13 +38,15 @@ class BulletSimuFrame(wx.Frame):
         
         self.panelParams = PanelSimuParameters(self)
         self.panelObstacles = PanelObstaclesCtrl(self)
-        
-        sizer = wx.FlexGridSizer(rows=1, cols=2, hgap=5)
+        self.panelStatus = PanelSimuStatus(self)
+    
+        sizer = wx.FlexGridSizer(rows=2, cols=2, hgap=5)
         sizer.Add(self.panelParams, flag=wx.EXPAND)
         sizer.Add(self.panelObstacles, flag=wx.EXPAND)
+        sizer.Add(self.panelStatus, flag=wx.EXPAND)
         sizer.AddGrowableCol(1)
         sizer.AddGrowableRow(0)
-        self.SetSizer(sizer)
+        self.SetSizerAndFit(sizer)
 
 if __name__ == '__main__':
     simu = BulletSimu()
