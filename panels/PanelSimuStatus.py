@@ -56,5 +56,9 @@ class PanelSimuStatus(wx.Panel):
         bs.Add(sizer)
         
         self.SetSizer(bs)
+        
+    """Binds the start button to a callback. """
+    def BindStart(self, func):
+        self.startBt.Bind(wx.EVT_BUTTON, func)
 
 __all__ = ["PanelSimuStatus"]

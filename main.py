@@ -27,11 +27,27 @@ from panels import PanelSimuStatus
 from panels import PanelSimulation
 
 class BulletSimu(wx.App):
+    def __init__(self, **kargs):
+        super(BulletSimu, self).__init__(**kargs)
+        self.simulating = False
+        
     def OnInit(self):
         self.frame = BulletSimuFrame()
+        
+        self.frame.panelStatus.BindStart(self.OnSimulationButton)
+        
         self.frame.Center()
         self.frame.Show()
         return True
+        
+    def OnSimulationButton(self, event):
+        button = event.GetEventObject()
+        if not self.simulating:
+            self.simulating = True
+            button.SetLabel("Stop")
+        else:
+            self.simulating = False
+            button.SetLabel("Start")
         
 class BulletSimuFrame(wx.Frame):
     def __init__(self, **kargs):
