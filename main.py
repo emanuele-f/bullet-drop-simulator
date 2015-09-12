@@ -29,6 +29,7 @@ from panels import PanelSimulation
 class BulletSimu(wx.App):
     def OnInit(self):
         self.frame = BulletSimuFrame()
+        self.frame.Center()
         self.frame.Show()
         return True
         
