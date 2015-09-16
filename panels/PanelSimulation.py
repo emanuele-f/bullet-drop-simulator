@@ -25,6 +25,23 @@ class PanelSimulation(wx.Panel):
     def __init__(self, parent, **kargs):
         super(PanelSimulation, self).__init__(parent, **kargs)
         
+        self._simulating = False
+        
         self.SetSizeHints(600,400,600,400)
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
+        
+    def OnPaint(self, event=None):
+        dc = wx.PaintDC(self)
+        dc.Clear()
+        dc.SetPen(wx.Pen(wx.BLACK, 4))
+        dc.DrawLine(0, 0, 505, 505)
+        
+    def SetIsSimulating(self, simulating):
+        if simulating:
+            self._simulating = True
+            self.Refresh()
+        else:
+            self._simulating = False
+            self.Refresh()
 
 __all__ = ["PanelSimulation"]
