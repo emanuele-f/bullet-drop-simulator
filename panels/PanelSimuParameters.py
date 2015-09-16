@@ -61,5 +61,8 @@ class PanelSimuParameters(wx.Panel):
         v0 = float(self.v0.GetValue())
         teta = float(self.angle.GetValue())
         return (v0, teta)
+        
+    def BindAngle(self, func):
+        self.angle.Bind(wx.EVT_TEXT, func)
 
 __all__ = ["PanelSimuParameters"]

@@ -43,6 +43,8 @@ class BulletSimu(wx.App):
         
         self.frame.panelStatus.BindStart(self.OnSimulationButton)
         self.frame.panelParams.SetVelocityAndAngle(INITIAL_VELOCITY, INITIAL_ANGLE)
+        self.frame.panelParams.BindAngle(self.OnAngleParameter)
+        self.frame.panelSimulation.SetGroundHeight(GROUND_HEIGHT)
         
         self.frame.Center()
         self.frame.Show()
@@ -56,12 +58,21 @@ class BulletSimu(wx.App):
             v0_angle = self.frame.panelParams.GetVelocityAndAngle()
             self.simulation.InitFromVelocityAndAngle(v0_angle[0], ToRadians(v0_angle[1]))
             self.simulation.Start(curtime)
-            self.frame.panelSimulation.SetIsSimulating(True)
+            self.frame.panelSimulation.SetSimulation(self.simulation)
             button.SetLabel("Stop")
         else:
             self.simulation.Stop(curtime)
             button.SetLabel("Start")
-            self.frame.panelSimulation.SetIsSimulating(False)
+            self.frame.panelSimulation.SetSimulation(False)
+            
+    def OnAngleParameter(self, event):
+        ti = event.GetEventObject()
+        try:
+            angle = ToRadians(float(ti.GetValue()))
+        except ValueError:
+            pass
+        else:
+            self.frame.panelSimulation.SetAngle(angle)
         
 class BulletSimuFrame(wx.Frame):
     def __init__(self, **kargs):
@@ -71,7 +82,7 @@ class BulletSimuFrame(wx.Frame):
         self.panelParams = PanelSimuParameters(self)
         self.panelObstacles = PanelObstaclesCtrl(self)
         self.panelStatus = PanelSimuStatus(self)
-        self.panelSimulation = PanelSimulation(self)
+        self.panelSimulation = PanelSimulation(self, THEME, UNITSIZE)
     
         sizer = wx.FlexGridSizer(rows=2, cols=2, hgap=5)
         sizer.Add(self.panelSimulation)

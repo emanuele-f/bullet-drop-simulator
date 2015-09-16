@@ -21,6 +21,23 @@
 
 INITIAL_ANGLE = 45
 INITIAL_VELOCITY = 8
+GROUND_HEIGHT = 50
+
+UNITSIZE = 40
 
 # List of initial obstacles, in the form (x, y, w, h)
 INITIAL_OBSTACLES = ()
+
+# Color "theme"
+THEME = {
+    "track" : (255,50,50),
+    "ramp" : (50,50,50),
+    "ground" : (0,0,255),
+    "obstacles" : (0,100,0),
+    "units" : (255,0,0),
+    "ball" : (255,0,0),
+    "stats" : (0,0,0),
+    "target" : (0,255,0),
+    "range" : (255,0,0),
+    "line" : 2
+}
