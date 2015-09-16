@@ -33,6 +33,8 @@ from structures import Simulation
 from utils import *
 from constraints import *
 
+SIMULATION_TIMER_ID = 1
+
 class BulletSimu(wx.App):
     def __init__(self, **kargs):
         super(BulletSimu, self).__init__(**kargs)
@@ -45,6 +47,8 @@ class BulletSimu(wx.App):
         self.frame.panelParams.SetVelocityAndAngle(INITIAL_VELOCITY, INITIAL_ANGLE)
         self.frame.panelParams.BindAngle(self.OnAngleParameter)
         self.frame.panelSimulation.SetGroundHeight(GROUND_HEIGHT)
+        self.timer = wx.Timer(self, SIMULATION_TIMER_ID)
+        self.Bind(wx.EVT_TIMER, self.OnSimuTick, self.timer)
         
         self.frame.Center()
         self.frame.Show()
@@ -61,13 +65,15 @@ class BulletSimu(wx.App):
             self.frame.panelParams.Disable()
             self.frame.panelObstacles.Disable()
             self.frame.panelSimulation.SetSimulation(self.simulation)
+            self.timer.Start(1000./SIMULATION_FPS)
             button.SetLabel("Stop")
         else:
             self.simulation.Stop(curtime)
-            button.SetLabel("Start")
             self.frame.panelParams.Enable()
             self.frame.panelObstacles.Enable()
             self.frame.panelSimulation.SetSimulation(False)
+            self.timer.Stop()
+            button.SetLabel("Start")
             
     def OnAngleParameter(self, event):
         ti = event.GetEventObject()
@@ -77,6 +83,9 @@ class BulletSimu(wx.App):
             pass
         else:
             self.frame.panelSimulation.SetAngle(angle)
+            
+    def OnSimuTick(self, event):
+        self.frame.panelSimulation.Refresh()
         
 class BulletSimuFrame(wx.Frame):
     def __init__(self, **kargs):
@@ -100,3 +109,5 @@ class BulletSimuFrame(wx.Frame):
 if __name__ == '__main__':
     simu = BulletSimu()
     simu.MainLoop()
+
+__all__ = ["BulletSimu"]
