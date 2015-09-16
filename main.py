@@ -58,11 +58,15 @@ class BulletSimu(wx.App):
             v0_angle = self.frame.panelParams.GetVelocityAndAngle()
             self.simulation.InitFromVelocityAndAngle(v0_angle[0], ToRadians(v0_angle[1]))
             self.simulation.Start(curtime)
+            self.frame.panelParams.Disable()
+            self.frame.panelObstacles.Disable()
             self.frame.panelSimulation.SetSimulation(self.simulation)
             button.SetLabel("Stop")
         else:
             self.simulation.Stop(curtime)
             button.SetLabel("Start")
+            self.frame.panelParams.Enable()
+            self.frame.panelObstacles.Enable()
             self.frame.panelSimulation.SetSimulation(False)
             
     def OnAngleParameter(self, event):
