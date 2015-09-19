@@ -79,10 +79,10 @@ class PanelSimulation(wx.Panel):
         x,y = self.CoordsToPixels((self._simu.x, self._simu.y))
 
         dc.SetPen(wx.Pen(self._theme["ball"], self._theme["line"]))
-        dc.DrawCircle(x, y, self._theme["ball_ray"])
         if len(self._simu.track) > 1:
             real_points = map(self.CoordsToPixels, self._simu.track)
             dc.DrawLines(real_points)
+        dc.DrawCircle(x, y, self._theme["ball_ray"])
 
     def SetSimulation(self, simulation):
         if simulation:
