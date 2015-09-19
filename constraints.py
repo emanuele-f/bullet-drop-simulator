@@ -39,6 +39,7 @@ THEME = {
     "obstacles" : (0,100,0),
     "units" : (255,0,0),
     "ball" : (255,0,0),
+    "ball_ray" : 10,
     "stats" : (0,0,0),
     "target" : (0,255,0),
     "range" : (255,0,0),
