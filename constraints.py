@@ -43,5 +43,6 @@ THEME = {
     "stats" : (0,0,0),
     "target" : (0,255,0),
     "range" : (255,0,0),
-    "line" : 2
+    "line" : 2,
+    "background" : (255, 255, 255)
 }

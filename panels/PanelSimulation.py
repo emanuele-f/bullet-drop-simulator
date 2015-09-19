@@ -33,6 +33,7 @@ class PanelSimulation(wx.Panel):
         self._ground_y = 0
         self._theme = theme
         self._units = unitsize
+        self.SetBackgroundColour(self._theme['background'])
 
         # Set exactly this size
         self.SetSizeHints(self.real_width,self.real_height,self.real_width,self.real_height)
