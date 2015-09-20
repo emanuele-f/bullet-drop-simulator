@@ -84,7 +84,7 @@ class BulletDrop:
             # not enough power
             return None
         teta = 0.5 * math.asin(sin2teta)
-        return teta
+        return math.pi/2. - teta
 
     """Calcola, dati v0 e teta, il punto finale della traiettoria."""
     @staticmethod

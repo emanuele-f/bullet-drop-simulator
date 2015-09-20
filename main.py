@@ -183,15 +183,15 @@ class BulletSimu(wx.App):
         else:
             xtarget = self.frame.panelSimulation.GetTarget()
             if xtarget:
-                self._AutoCalculateParamsHard(xtarget)
+                self._AutoCalculateParamsMedium(xtarget)
 
     def OnSimuTarget(self, event):
         self.frame.panelSimulation.SetTarget(event.target)
         self.frame.panelSimulation.SetTargetLocked(True)
         self._AutoCalculateParamsSimple(event.target)
 
-    """Determina velocità e angolo per arrivare al punto stabilito, senza
-       considerare ventuali ostacoli.
+    """Determina angolo, mantenendo la velocità inoistata, per arrivare al
+       punto stabilito, senza considerare ventuali ostacoli.
     """
     def _AutoCalculateParamsSimple(self, xtarget):
         v0 = self.frame.panelParams.GetVelocityAndAngle()[0]
@@ -206,14 +206,37 @@ class BulletSimu(wx.App):
 
     """Determina velocità e angolo per arrivare al punto stabilito evitando
        eventuali ostacoli.
+
+       NB. non supporta coordinate y degli ostacoli diverse da 0
     """
-    def _AutoCalculateParamsHard(self, xtarget):
+    def _AutoCalculateParamsMedium(self, xtarget):
+        result = None
+        maxy = None
+        y0 = 0
+
         for ob in self.obstacles:
+            # only need to check top left and top right points
+            y = ob[3]
+            # get [0] and [2]
             for i in range(2):
-                point = ob[i*2+0], ob[i*2+0]
-            v0_teta = get_v0_teta(xi, y, y0, xtarget)
-            nymax = get_max_y(*v0_teta)
-        self._AutoCalculateParamsSimple(xtarget)
+                x = ob[i*2]
+
+                if x < xtarget:
+                    v0_teta = BulletDrop.v0_teta_pass_by(x, y, y0, xtarget)
+                    nymax = BulletDrop.max_height(*v0_teta)
+                    # higher wins
+                    if not maxy or nymax > maxy:
+                        result = v0_teta
+                        maxy = nymax
+
+        if not result:
+            # no influent obstacles where found
+            self._AutoCalculateParamsSimple(xtarget)
+        else:
+            self.frame.panelParams.SetVelocityAndAngle(result[0], result[1])
+            self.frame.panelSimulation.SetAngle(result[1])
+            self.frame.panelSimulation.SetComputeMaxRange(result[0])
+            self.frame.panelSimulation.SetTargetLocked(True)
 
     def CheckObstaclesCollision(self, x, y):
         for ob in self.obstacles:
