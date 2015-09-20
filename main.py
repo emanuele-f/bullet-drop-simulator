@@ -121,7 +121,7 @@ class BulletSimu(wx.App):
             finished = True
         elif y <= 0 and vy <= 0:
             finished = True
-        elif self.CheckObstacleCollision(x, y):
+        elif self.CheckObstaclesCollision(x, y):
             # Collision detected
             finished = True
         else:
@@ -155,7 +155,7 @@ class BulletSimu(wx.App):
             return
 
         virtpoint = self.frame.panelSimulation.PixelsToCoords(event.GetPosition())
-        ob = self.CheckObstacleCollision(*virtpoint)
+        ob = self.CheckObstaclesCollision(*virtpoint)
         if ob:
             # an obstacle was clicked
             self.frame.panelObstacles.SelectByRect(ob)
@@ -176,7 +176,7 @@ class BulletSimu(wx.App):
                     self.frame.panelSimulation.SetAngle(teta)
                     self.frame.panelSimulation.SetTargetLocked(True)
 
-    def CheckObstacleCollision(self, x, y):
+    def CheckObstaclesCollision(self, x, y):
         for ob in self.obstacles:
             if RectCollidePoint(ob, (x,y)):
                 return ob
