@@ -59,8 +59,10 @@ class BulletSimu(wx.App):
         self.frame.panelParams.BindAngle(self.OnAngleParameter)
         self.frame.panelSimulation.SetGroundHeight(GROUND_HEIGHT)
         self.timer = wx.Timer(self, SIMULATION_TIMER_ID)
+
         self.Bind(wx.EVT_TIMER, self.OnSimuTick, self.timer)
         self.frame.panelObstacles.Bind(MY_EVT_OBSTACLES, self.OnObstaclesChange)
+        self.frame.panelSimulation.Bind(wx.EVT_LEFT_DOWN, self.OnSetTargetDistance)
 
         self.frame.Center()
         self.frame.Show()
@@ -137,6 +139,19 @@ class BulletSimu(wx.App):
     def OnObstaclesChange(self, event):
         self.obstacles = self.frame.panelObstacles.GetObstaclesRects()
         self.frame.panelSimulation.SetObstacles(self.obstacles)
+
+    def OnSetTargetDistance(self, event):
+        if self.frame.panelSimulation.IsTargetLocked():
+            self.frame.panelSimulation.SetTargetLocked(False)
+        else:
+            xtarget = self.frame.panelSimulation.GetTarget()
+            v0 = self.frame.panelParams.GetVelocityAndAngle()[0]
+            teta = BulletDrop.teta_by_v0_xf(v0, xtarget)
+            if not teta:
+                print "Not enough power!"
+            else:
+                self.frame.panelParams.SetVelocityAndAngle(v0, ToDegrees(teta))
+                self.frame.panelSimulation.SetTargetLocked(True)
 
     def CheckObstacleCollision(self, x, y):
         for ob in self.obstacles:

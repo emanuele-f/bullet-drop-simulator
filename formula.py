@@ -19,6 +19,7 @@
 #  MA 02110-1301, USA.
 #
 
+import math
 from constraints import GRAVITY_ACCELERATION
 
 class UniformMotion:
@@ -53,12 +54,26 @@ class BulletDrop:
     """Calcola v0 e teta0 in modo tale che la parabola con punto finale xf
        passi per il punto x,y.
 
-       NB. torna uno solo dei due angoli possibili, (teta e pi/2 - teta)
+       NB. torna uno solo dei due angoli possibili, (teta, pi/2 - teta)
     """
     @staticmethod
     def v0_teta_pass_by(x, y, y0, xf):
         teta = math.atan(xf * (y - y0) / (1. * x * (xf - x)))
         v0 = math.sqrt(- GRAVITY_ACCELERATION * xf / math.sin(2*teta))
         return v0, teta
+
+    """Calcola teta, in modo tale che il punto finale del moto di velocità
+       iniziale v0 sia xf. Torna None se la gittata è inferiore ad xf.
+
+       NB. torna uno solo dei due angoli possibili, (teta, pi/2 - teta)
+    """
+    @staticmethod
+    def teta_by_v0_xf(v0, xf):
+        sin2teta = -GRAVITY_ACCELERATION * 1. * xf / (v0*v0)
+        if sin2teta >= 1 or sin2teta <= 0:
+            # not enough power
+            return None
+        teta = 0.5 * math.asin(sin2teta)
+        return math.pi/2. - teta
 
 __all__ = ["UniformMotion", "UniformAccelleration", "BulletDrop"]

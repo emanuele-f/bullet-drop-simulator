@@ -42,6 +42,8 @@ THEME = {
     "ball_ray" : 10,
     "stats" : (0,0,0),
     "target" : (0,255,0),
+    "target_width" : 5,
+    "target_height" : 15,
     "range" : (255,0,0),
     "line" : 2,
     "background" : (255, 255, 255)

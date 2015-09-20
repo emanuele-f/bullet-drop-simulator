@@ -34,11 +34,14 @@ class PanelSimulation(wx.Panel):
         self._theme = theme
         self._units = unitsize
         self._obrects = []
+        self._target_x = None
+        self._target_locked = False
         self.SetBackgroundColour(self._theme['background'])
 
         # Set exactly this size
         self.SetSizeHints(self.real_width,self.real_height,self.real_width,self.real_height)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
+        self.Bind(wx.EVT_MOTION, self.OnMotion)
 
     def CoordsToPixels(self, (x, y)):
         return (int(x * self._units), self.real_height - (self._ground_y + int(y * self._units)))
@@ -52,11 +55,31 @@ class PanelSimulation(wx.Panel):
         else:
             self.OnPaintDuringSetup()
 
+    def OnMotion(self, event):
+        if not self._target_locked:
+            self._target_x = event.GetX()
+            self.Refresh()
+
+    def GetTarget(self):
+        #~ self._target_locked = True
+        return self.PixelsToCoords((self._target_x, 0))[0]
+
+    def SetTargetLocked(self, locked):
+        if locked:
+            self._target_locked = True
+        else:
+            self._target_locked = False
+
+    def IsTargetLocked(self):
+        return self._target_locked
+
     def OnPaintDuringSimulation(self):
         dc = wx.PaintDC(self)
         dc.Clear()
         self._DrawGround(dc)
         self._DrawObstacles(dc)
+        if self._target_x:
+            self._DrawTargetMarker(dc, self._target_x)
         self._DrawBall(dc)
 
     def OnPaintDuringSetup(self):
@@ -65,6 +88,8 @@ class PanelSimulation(wx.Panel):
         self._DrawGround(dc)
         self._DrawObstacles(dc)
         self._DrawRamp(dc)
+        if self._target_x:
+            self._DrawTargetMarker(dc, self._target_x)
 
     def _DrawGround(self, dc):
         dc.SetPen(wx.Pen(self._theme["ground"], self._theme["line"]))
@@ -95,6 +120,11 @@ class PanelSimulation(wx.Panel):
             xi, yi = self.CoordsToPixels((ob[0], ob[1]))
             xf, yf = self.CoordsToPixels((ob[2], ob[3]))
             dc.DrawRectangle(xi, yi, xf-xi, yf-yi)
+
+    def _DrawTargetMarker(self, dc, x):
+        h = self.real_height - self._ground_y
+        dc.SetPen(wx.Pen(self._theme["target"], self._theme["target_width"]))
+        dc.DrawLine(x, h-self._theme["target_height"], x, h)
 
     def SetSimulation(self, simulation):
         if simulation:
