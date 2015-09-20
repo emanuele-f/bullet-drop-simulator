@@ -19,6 +19,8 @@ Si rimanda ai siti ufficiali:
 - https://www.python.org/
 - http://www.wxpython.org/
 
+Una volta installato il necessario, il simulatore si avvia posizionandosi nella parent directory e digitando il comando *python main.py*
+
 In alternativa, limitatamente al sistema operativo Windows, saranno disponibili a breve eseguibili standalone, avviabili anche senza ambiente python.
 
 Miglioramenti
