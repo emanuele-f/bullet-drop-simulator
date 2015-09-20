@@ -23,6 +23,7 @@ import wx
 import wx.lib.newevent
 from formula import BulletDrop
 from utils import ToDegrees, ToRadians
+from constraints import Measures
 
 _MyEventSimuParameters, MY_EVT_PARAMETERS = wx.lib.newevent.NewEvent()
 _MyEventSimuSetTarget, MY_EVT_TARGET = wx.lib.newevent.NewEvent()
@@ -44,7 +45,7 @@ class PanelSimuParameters(wx.Panel):
         self.tc_maxRange.Bind(wx.EVT_TEXT, self.OnMaxRange)
 
         # Table sizer
-        ts = wx.GridSizer(rows=4, cols=3)
+        ts = wx.GridSizer(rows=4, cols=3, hgap=Measures.PANEL_INNER_PADDING)
         ts.Add(wx.StaticText(self, label="angolo"))
         ts.Add(self.tc_angle)
         ts.Add(wx.StaticText(self, label="gradi"))
@@ -61,7 +62,7 @@ class PanelSimuParameters(wx.Panel):
         # Outer box
         box = wx.StaticBox(self, label="Parametri di simulazione")
         bs = wx.StaticBoxSizer(box)
-        bs.Add(ts)
+        bs.Add(ts, flag=wx.ALL, border=Measures.PANEL_BOX_PADDING)
 
         self.SetSizer(bs)
 

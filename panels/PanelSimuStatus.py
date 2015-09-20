@@ -20,6 +20,7 @@
 #
 
 import wx
+from constraints import Measures
 
 class PanelSimuStatus(wx.Panel):
     def __init__(self, parent, **kargs):
@@ -33,32 +34,32 @@ class PanelSimuStatus(wx.Panel):
         self.t = wx.StaticText(self)
 
         # Table sizer
-        ts = wx.GridSizer(rows=5, cols=3)
+        ts = wx.GridSizer(rows=5, cols=3, hgap=Measures.PANEL_INNER_PADDING)
         ts.Add(wx.StaticText(self, label="Velocità x"))
-        ts.Add(self.vx)
+        ts.Add(self.vx, flag=wx.ALIGN_CENTER_HORIZONTAL)
         ts.Add(wx.StaticText(self, label="u/s"))
         ts.Add(wx.StaticText(self, label="Velocità y"))
-        ts.Add(self.vy)
+        ts.Add(self.vy, flag=wx.ALIGN_CENTER_HORIZONTAL)
         ts.Add(wx.StaticText(self, label="u/s"))
         ts.Add(wx.StaticText(self, label="X"))
-        ts.Add(self.x)
+        ts.Add(self.x, flag=wx.ALIGN_CENTER_HORIZONTAL)
         ts.Add(wx.StaticText(self, label="u"))
         ts.Add(wx.StaticText(self, label="Y"))
-        ts.Add(self.y)
+        ts.Add(self.y, flag=wx.ALIGN_CENTER_HORIZONTAL)
         ts.Add(wx.StaticText(self, label="u"))
         ts.Add(wx.StaticText(self, label="Tempo"))
-        ts.Add(self.t)
+        ts.Add(self.t, flag=wx.ALIGN_CENTER_HORIZONTAL)
         ts.Add(wx.StaticText(self, label="s"))
 
         # Main sizer
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.startBt)
-        sizer.Add(ts)
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(self.startBt, flag=wx.CENTER)
+        sizer.Add(ts, flag=wx.LEFT|wx.EXPAND, border=Measures.PANEL_INNER_PADDING)
 
         # Outer box
         box = wx.StaticBox(self, label="Stato simulazione")
         bs = wx.StaticBoxSizer(box)
-        bs.Add(sizer)
+        bs.Add(sizer, flag=wx.ALL|wx.EXPAND, border=Measures.PANEL_BOX_PADDING)
 
         self.SetSizer(bs)
 

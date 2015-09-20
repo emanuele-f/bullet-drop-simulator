@@ -21,6 +21,7 @@
 
 import wx
 import wx.lib.newevent
+from constraints import Measures
 
 KEY_DELIMITER = "-"
 _MyEventObstacles, MY_EVT_OBSTACLES = wx.lib.newevent.NewEvent()
@@ -52,12 +53,12 @@ class PanelObstaclesCtrl(wx.Panel):
 
         # Horizontal sizer
         hs = wx.BoxSizer(wx.HORIZONTAL)
-        hs.Add(self.selector)
-        hs.Add(self.bt_delete)
+        hs.Add(self.selector, flag=wx.RIGHT, border=Measures.PANEL_INNER_PADDING_SMALL)
+        hs.Add(self.bt_delete, flag=wx.RIGHT, border=Measures.PANEL_INNER_PADDING_SMALL)
         hs.Add(self.bt_add)
 
         # Table sizer
-        ts = wx.GridSizer(rows=4, cols=2)
+        ts = wx.GridSizer(rows=4, cols=2, hgap=Measures.PANEL_INNER_PADDING)
         ts.Add(wx.StaticText(self, label="x"))
         ts.Add(self.tc_x)
         ts.Add(wx.StaticText(self, label="y"))
@@ -68,13 +69,14 @@ class PanelObstaclesCtrl(wx.Panel):
         ts.Add(self.tc_height)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(hs)
-        sizer.Add(ts)
+        sizer.Add(hs, flag=wx.BOTTOM, border=Measures.PANEL_INNER_PADDING)
+        sizer.Add(ts, flag=wx.CENTER)
 
         # Outer box
         box = wx.StaticBox(self, label="Gestione ostacoli")
         bs = wx.StaticBoxSizer(box)
-        bs.Add(sizer)
+        bs.Add(sizer, flag=wx.ALL, border=Measures.PANEL_BOX_PADDING)
+        self.selector.SetMinSize((110, self.selector.GetMinSize()[1]))
 
         self.SetSizer(bs)
 

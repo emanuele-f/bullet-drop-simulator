@@ -49,3 +49,10 @@ THEME = {
     "line" : 2,
     "background" : (255, 255, 255)
 }
+
+# Size stuff
+class Measures:
+    PANEL_BOX_PADDING = 10
+    PANEL_BOX_MARGIN = 3
+    PANEL_INNER_PADDING = 7
+    PANEL_INNER_PADDING_SMALL = 3

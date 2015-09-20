@@ -19,10 +19,6 @@
 #  MA 02110-1301, USA.
 #
 
-# TODO
-#   - beautify and order GUI
-#   - Modify unit scale from UI
-
 import time
 import wx
 
@@ -265,11 +261,11 @@ class BulletSimuFrame(wx.Frame):
         self.panelSimulation = PanelSimulation(self, THEME, UNITSIZE)
 
         subsizer = wx.BoxSizer(wx.HORIZONTAL)
-        subsizer.Add(self.panelStatus, flag=wx.EXPAND)
+        subsizer.Add(self.panelStatus, flag=wx.EXPAND|wx.ALL, border=Measures.PANEL_BOX_MARGIN)
         subsizer.AddStretchSpacer()
-        subsizer.Add(self.panelParams, flag=wx.EXPAND)
+        subsizer.Add(self.panelParams, flag=wx.EXPAND|wx.ALL, border=Measures.PANEL_BOX_MARGIN)
         subsizer.AddStretchSpacer()
-        subsizer.Add(self.panelObstacles, flag=wx.EXPAND)
+        subsizer.Add(self.panelObstacles, flag=wx.EXPAND|wx.ALL, border=Measures.PANEL_BOX_MARGIN)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.panelSimulation, 1, flag=wx.EXPAND)
