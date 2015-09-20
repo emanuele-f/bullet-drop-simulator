@@ -69,4 +69,11 @@ class PanelSimuStatus(wx.Panel):
     def SetStatus(self, msg):
         self.startBt.SetLabel(msg)
 
+    def UpdateData(self, x, y, vx, vy, t):
+        self.x.SetLabel("%.1f" % x)
+        self.y.SetLabel("%.1f" % y)
+        self.vx.SetLabel("%.1f" % vx)
+        self.vy.SetLabel("%.1f" % vy)
+        self.t.SetLabel("%.2f" % t)
+
 __all__ = ["PanelSimuStatus"]

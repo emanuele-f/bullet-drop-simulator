@@ -127,6 +127,12 @@ class BulletSimu(wx.App):
             self.simulation.track.append((x, y))
 
         self.frame.panelSimulation.Refresh()
+        self.frame.panelStatus.UpdateData(
+            self.simulation.x,
+            self.simulation.y,
+            self.simulation.vx,
+            self.simulation.vy,
+            t)
 
     def OnObstaclesChange(self, event):
         self.obstacles = self.frame.panelObstacles.GetObstaclesRects()
