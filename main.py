@@ -118,16 +118,16 @@ class BulletSimu(wx.App):
         else:
             finished = False
 
+        self.simulation.x = x
+        self.simulation.y = y
+        self.simulation.vy = vy
+        self.simulation.track.append((x, y))
+
         if finished:
             self.simulation.Stop(t)
             self.timer.Stop()
             self.frame.panelStatus.SetStatus("Reset")
             self.state = SIMULATION_STATE_FINISHED
-        else:
-            self.simulation.x = x
-            self.simulation.y = y
-            self.simulation.vy = vy
-            self.simulation.track.append((x, y))
 
         self.frame.panelSimulation.Refresh()
         self.frame.panelStatus.UpdateData(
