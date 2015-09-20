@@ -64,7 +64,7 @@ class BulletSimu(wx.App):
 
         self.Bind(wx.EVT_TIMER, self.OnSimuTick, self.timer)
         self.frame.panelObstacles.Bind(MY_EVT_OBSTACLES, self.OnObstaclesChange)
-        self.frame.panelSimulation.Bind(wx.EVT_LEFT_DOWN, self.OnSetTargetDistance)
+        self.frame.panelSimulation.Bind(wx.EVT_LEFT_DOWN, self.OnSimuClick)
         self.frame.panelParams.Bind(MY_EVT_PARAMETERS, self.OnSimuParameters)
 
         self.frame.Center()
@@ -140,8 +140,15 @@ class BulletSimu(wx.App):
         self.obstacles = self.frame.panelObstacles.GetObstaclesRects()
         self.frame.panelSimulation.SetObstacles(self.obstacles)
 
-    def OnSetTargetDistance(self, event):
+    def OnSimuClick(self, event):
         if self.state != SIMULATION_STATE_READY:
+            return
+
+        virtpoint = self.frame.panelSimulation.PixelsToCoords(event.GetPosition())
+        ob = self.CheckObstacleCollision(*virtpoint)
+        if ob:
+            # an obstacle was clicked
+            self.frame.panelObstacles.SelectByRect(ob)
             return
 
         if self.frame.panelSimulation.IsTargetLocked():

@@ -191,4 +191,15 @@ class PanelObstaclesCtrl(wx.Panel):
             l.append((ob[0], ob[1], ob[0]+ob[2], ob[1]+ob[3]))
         return l
 
+    """Sets current selection by rect spec"""
+    def SelectByRect(self, rect):
+        rect = [rect[0], rect[1], rect[2]-rect[0], rect[3]-rect[1]]
+        try:
+            key = (key for key,value in self._obstacles.items() if value==rect).next()
+        except StopIteration:
+            print self._obstacles
+            assert 0, "No obstacle found for rect %s" % str(rect)
+
+        self._SelectorOn(key)
+
 __all__ = ["PanelObstaclesCtrl", "MY_EVT_OBSTACLES"]
