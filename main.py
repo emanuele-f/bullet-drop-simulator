@@ -133,7 +133,9 @@ class BulletSimu(wx.App):
         self.frame.panelSimulation.SetObstacles(self.obstacles)
 
     def CheckObstacleCollision(self, x, y):
-        # TODO implement
+        for ob in self.obstacles:
+            if RectCollidePoint(ob, (x,y)):
+                return ob
         return None
 
 class BulletSimuFrame(wx.Frame):

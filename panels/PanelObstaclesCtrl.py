@@ -106,13 +106,13 @@ class PanelObstaclesCtrl(wx.Panel):
 
         try:
             if propid == 0:
-                ob[0] = int(self.tc_x.GetValue())
+                ob[0] = float(self.tc_x.GetValue())
             elif propid == 1:
-                ob[1] = int(self.tc_y.GetValue())
+                ob[1] = float(self.tc_y.GetValue())
             elif propid == 2:
-                ob[2] = int(self.tc_width.GetValue())
+                ob[2] = float(self.tc_width.GetValue())
             elif propid == 3:
-                ob[3] = int(self.tc_height.GetValue())
+                ob[3] = float(self.tc_height.GetValue())
         except ValueError:
             pass
         else:
