@@ -116,7 +116,7 @@ class PanelSimulation(wx.Panel):
         dc.DrawLine(0, self.real_height-self._ground_y, self.real_width, self.real_height-self._ground_y)
 
         dc.SetPen(wx.Pen(self._theme["units"], self._theme["line"]))
-        for i in range(0, self.real_width):
+        for i in range(0, self.real_width/self._units+1):
             dc.DrawLine(self._units*i, self.real_height-self._ground_y-10, self._units*i, self.real_height)
 
     def _DrawRamp(self, dc):

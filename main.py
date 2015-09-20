@@ -20,7 +20,7 @@
 #
 
 # TODO
-#   - Draw markers
+#   - beautify and order GUI
 #   - Add numeric values validators
 #   - Import and parse initial obstacles
 #   - Modify unit scale from UI
@@ -64,6 +64,7 @@ class BulletSimu(wx.App):
         self.timer = wx.Timer(self, SIMULATION_TIMER_ID)
 
         self.Bind(wx.EVT_TIMER, self.OnSimuTick, self.timer)
+        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyPress)
         self.frame.panelObstacles.Bind(MY_EVT_OBSTACLES, self.OnObstaclesChange)
         self.frame.panelSimulation.Bind(wx.EVT_LEFT_DOWN, self.OnSimuClick)
         self.frame.panelParams.Bind(MY_EVT_PARAMETERS, self.OnSimuParameters)
@@ -72,7 +73,7 @@ class BulletSimu(wx.App):
         self.frame.Show()
         return True
 
-    def OnSimulationButton(self, event):
+    def _StartButtonLogic(self):
         curtime = time.time()
 
         if self.state == SIMULATION_STATE_READY:
@@ -93,6 +94,14 @@ class BulletSimu(wx.App):
             self.timer.Stop()
             self.frame.panelStatus.SetStatus("Start")
             self.state = SIMULATION_STATE_READY
+
+    def OnSimulationButton(self, event):
+        self._StartButtonLogic()
+
+    def OnKeyPress(self, event):
+        keycode = event.GetKeyCode()
+        if keycode == wx.WXK_SPACE:
+            self._StartButtonLogic()
 
     def OnSimuParameters(self, event):
         angle = event.angle

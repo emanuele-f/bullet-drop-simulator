@@ -26,7 +26,7 @@ INITIAL_VELOCITY = 8
 GROUND_HEIGHT = 50
 
 UNITSIZE = 40
-SIMULATION_FPS = 60
+SIMULATION_FPS = 40
 
 # List of initial obstacles, in the form (x, y, w, h)
 INITIAL_OBSTACLES = ()
