@@ -21,6 +21,7 @@
 
 import math
 import wx
+from formula import BulletDrop
 
 class PanelSimulation(wx.Panel):
     def __init__(self, parent, theme, unitsize, **kargs):
@@ -37,6 +38,7 @@ class PanelSimulation(wx.Panel):
         self._target_x = None
         self._target_locked = False
         self.SetBackgroundColour(self._theme['background'])
+        self._max_range = 0
 
         # Set exactly this size
         self.SetSizeHints(self.real_width,self.real_height,self.real_width,self.real_height)
@@ -58,8 +60,10 @@ class PanelSimulation(wx.Panel):
 
     def OnMotion(self, event):
         if not self._target_locked:
-            self._target_x = event.GetX()
-            self.Refresh()
+            x = event.GetX()
+            if x <= self._max_range:
+                self._target_x = x
+                self.Refresh()
 
     def OnLeaveWindow(self, event):
         if not self._target_locked:
@@ -67,6 +71,8 @@ class PanelSimulation(wx.Panel):
             self.Refresh()
 
     def GetTarget(self):
+        if not self._target_x:
+            return None
         return self.PixelsToCoords((self._target_x, 0))[0]
 
     def SetTargetLocked(self, locked):
@@ -83,8 +89,7 @@ class PanelSimulation(wx.Panel):
         dc.Clear()
         self._DrawGround(dc)
         self._DrawObstacles(dc)
-        if self._target_x:
-            self._DrawTargetMarker(dc, self._target_x)
+        self._DrawMarker(dc, self._theme["maxrange"], self._max_range)
         self._DrawBall(dc)
 
     def OnPaintDuringSetup(self):
@@ -93,8 +98,9 @@ class PanelSimulation(wx.Panel):
         self._DrawGround(dc)
         self._DrawObstacles(dc)
         self._DrawRamp(dc)
+        self._DrawMarker(dc, self._theme["maxrange"], self._max_range,)
         if self._target_x:
-            self._DrawTargetMarker(dc, self._target_x)
+            self._DrawMarker(dc, self._theme["target"], self._target_x)
 
     def _DrawGround(self, dc):
         dc.SetPen(wx.Pen(self._theme["ground"], self._theme["line"]))
@@ -126,9 +132,9 @@ class PanelSimulation(wx.Panel):
             xf, yf = self.CoordsToPixels((ob[2], ob[3]))
             dc.DrawRectangle(xi, yi, xf-xi, yf-yi)
 
-    def _DrawTargetMarker(self, dc, x):
+    def _DrawMarker(self, dc, color, x):
         h = self.real_height - self._ground_y
-        dc.SetPen(wx.Pen(self._theme["target"], self._theme["target_width"]))
+        dc.SetPen(wx.Pen(color, self._theme["target_width"]))
         dc.DrawLine(x, h-self._theme["target_height"], x, h)
 
     def SetSimulation(self, simulation):
@@ -140,7 +146,7 @@ class PanelSimulation(wx.Panel):
 
     def SetAngle(self, angle):
         assert not self._simu, "Cannot set angle during simulation"
-        if angle > 0 and angle < 90:
+        if angle > 0 and angle < math.pi/2.:
             self._angle = angle
             self.Refresh()
 
@@ -149,6 +155,11 @@ class PanelSimulation(wx.Panel):
 
     def SetObstacles(self, obrects):
         self._obrects = obrects
+        self.Refresh()
+
+    def SetComputeMaxRange(self, v0, teta):
+        mdist = BulletDrop.max_distance(v0, teta)
+        self._max_range = self.CoordsToPixels((mdist, 0))[0]
         self.Refresh()
 
 __all__ = ["PanelSimulation"]

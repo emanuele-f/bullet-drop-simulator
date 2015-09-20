@@ -51,6 +51,11 @@ class BulletDrop:
         sinteta = math.sin(teta)
         return (v0 * v0) * sinteta * sinteta / (-2. * GRAVITY_ACCELERATION)
 
+    """Torna la gittata del moto."""
+    @staticmethod
+    def max_distance(v0, teta):
+        return 1.*v0*v0/(- GRAVITY_ACCELERATION)
+
     """Calcola v0 e teta0 in modo tale che la parabola con punto finale xf
        passi per il punto x,y.
 

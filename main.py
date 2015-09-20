@@ -32,8 +32,11 @@ from panels import PanelObstaclesCtrl
 from panels import PanelSimuParameters
 from panels import PanelSimuStatus
 from panels import PanelSimulation
-from panels.PanelObstaclesCtrl import MY_EVT_OBSTACLES
 from structures import Simulation
+
+from panels.PanelObstaclesCtrl import MY_EVT_OBSTACLES
+from panels.PanelSimuParameters import MY_EVT_PARAMETERS
+
 from utils import *
 from constraints import *
 from formula import *
@@ -55,14 +58,14 @@ class BulletSimu(wx.App):
         self.frame = BulletSimuFrame()
 
         self.frame.panelStatus.BindStart(self.OnSimulationButton)
-        self.frame.panelParams.SetVelocityAndAngle(INITIAL_VELOCITY, INITIAL_ANGLE)
-        self.frame.panelParams.BindAngle(self.OnAngleParameter)
+        self.frame.panelParams.SetVelocityAndAngle(INITIAL_VELOCITY, ToRadians(INITIAL_ANGLE))
         self.frame.panelSimulation.SetGroundHeight(GROUND_HEIGHT)
         self.timer = wx.Timer(self, SIMULATION_TIMER_ID)
 
         self.Bind(wx.EVT_TIMER, self.OnSimuTick, self.timer)
         self.frame.panelObstacles.Bind(MY_EVT_OBSTACLES, self.OnObstaclesChange)
         self.frame.panelSimulation.Bind(wx.EVT_LEFT_DOWN, self.OnSetTargetDistance)
+        self.frame.panelParams.Bind(MY_EVT_PARAMETERS, self.OnSimuParameters)
 
         self.frame.Center()
         self.frame.Show()
@@ -73,7 +76,7 @@ class BulletSimu(wx.App):
 
         if self.state == SIMULATION_STATE_READY:
             v0_angle = self.frame.panelParams.GetVelocityAndAngle()
-            self.simulation.InitFromVelocityAndAngle(v0_angle[0], ToRadians(v0_angle[1]))
+            self.simulation.InitFromVelocityAndAngle(v0_angle[0], v0_angle[1])
             self.simulation.Start(curtime)
             self.frame.panelParams.Disable()
             self.frame.panelObstacles.Disable()
@@ -90,14 +93,11 @@ class BulletSimu(wx.App):
             self.frame.panelStatus.SetStatus("Start")
             self.state = SIMULATION_STATE_READY
 
-    def OnAngleParameter(self, event):
-        ti = event.GetEventObject()
-        try:
-            angle = ToRadians(float(ti.GetValue()))
-        except ValueError:
-            pass
-        else:
-            self.frame.panelSimulation.SetAngle(angle)
+    def OnSimuParameters(self, event):
+        angle = event.angle
+        v0 = event.velocity
+        self.frame.panelSimulation.SetAngle(angle)
+        self.frame.panelSimulation.SetComputeMaxRange(v0, angle)
 
     def OnSimuTick(self, event):
         t = time.time() - self.simulation.t0
@@ -141,17 +141,22 @@ class BulletSimu(wx.App):
         self.frame.panelSimulation.SetObstacles(self.obstacles)
 
     def OnSetTargetDistance(self, event):
+        if self.state != SIMULATION_STATE_READY:
+            return
+
         if self.frame.panelSimulation.IsTargetLocked():
             self.frame.panelSimulation.SetTargetLocked(False)
         else:
             xtarget = self.frame.panelSimulation.GetTarget()
-            v0 = self.frame.panelParams.GetVelocityAndAngle()[0]
-            teta = BulletDrop.teta_by_v0_xf(v0, xtarget)
-            if not teta:
-                print "Not enough power!"
-            else:
-                self.frame.panelParams.SetVelocityAndAngle(v0, ToDegrees(teta))
-                self.frame.panelSimulation.SetTargetLocked(True)
+            if xtarget:
+                v0 = self.frame.panelParams.GetVelocityAndAngle()[0]
+                teta = BulletDrop.teta_by_v0_xf(v0, xtarget)
+                if not teta:
+                    # not enough power
+                    pass
+                else:
+                    self.frame.panelParams.SetVelocityAndAngle(v0, teta)
+                    self.frame.panelSimulation.SetTargetLocked(True)
 
     def CheckObstacleCollision(self, x, y):
         for ob in self.obstacles:
