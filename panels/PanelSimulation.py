@@ -33,6 +33,7 @@ class PanelSimulation(wx.Panel):
         self._ground_y = 0
         self._theme = theme
         self._units = unitsize
+        self._obrects = []
         self.SetBackgroundColour(self._theme['background'])
 
         # Set exactly this size
@@ -55,12 +56,14 @@ class PanelSimulation(wx.Panel):
         dc = wx.PaintDC(self)
         dc.Clear()
         self._DrawGround(dc)
+        self._DrawObstacles(dc)
         self._DrawBall(dc)
 
     def OnPaintDuringSetup(self):
         dc = wx.PaintDC(self)
         dc.Clear()
         self._DrawGround(dc)
+        self._DrawObstacles(dc)
         self._DrawRamp(dc)
 
     def _DrawGround(self, dc):
@@ -85,6 +88,14 @@ class PanelSimulation(wx.Panel):
             dc.DrawLines(real_points)
         dc.DrawCircle(x, y, self._theme["ball_ray"])
 
+    def _DrawObstacles(self, dc):
+        dc.SetPen(wx.Pen(self._theme["obstacles"], self._theme["line"]))
+
+        for ob in self._obrects:
+            xi, yi = self.CoordsToPixels((ob[0], ob[1]))
+            xf, yf = self.CoordsToPixels((ob[2], ob[3]))
+            dc.DrawRectangle(xi, yi, xf-xi, yf-yi)
+
     def SetSimulation(self, simulation):
         if simulation:
             self._simu = simulation
@@ -100,5 +111,9 @@ class PanelSimulation(wx.Panel):
 
     def SetGroundHeight(self, height):
         self._ground_y = height
+
+    def SetObstacles(self, obrects):
+        self._obrects = obrects
+        self.Refresh()
 
 __all__ = ["PanelSimulation"]

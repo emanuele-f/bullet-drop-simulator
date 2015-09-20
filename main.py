@@ -49,6 +49,7 @@ class BulletSimu(wx.App):
         super(BulletSimu, self).__init__(**kargs)
         self.simulation = Simulation()
         self.state = SIMULATION_STATE_READY
+        self.obstacles = []
 
     def OnInit(self):
         self.frame = BulletSimuFrame()
@@ -128,8 +129,8 @@ class BulletSimu(wx.App):
         self.frame.panelSimulation.Refresh()
 
     def OnObstaclesChange(self, event):
-        obs = self.frame.panelObstacles.GetObstaclesRects()
-        print obs
+        self.obstacles = self.frame.panelObstacles.GetObstaclesRects()
+        self.frame.panelSimulation.SetObstacles(self.obstacles)
 
     def CheckObstacleCollision(self, x, y):
         # TODO implement
