@@ -252,7 +252,7 @@ class BulletSimu(wx.App):
 
 class BulletSimuFrame(wx.Frame):
     def __init__(self, **kargs):
-        kargs.setdefault("name", "Bullet Drop Simulator")
+        kargs.setdefault("title", "Bullet Drop Simulator")
         super(BulletSimuFrame, self).__init__(None, -1, **kargs)
 
         self.panelParams = PanelSimuParameters(self)
