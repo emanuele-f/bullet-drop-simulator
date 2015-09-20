@@ -23,14 +23,17 @@ import math
 import wx
 from formula import BulletDrop
 
+SIMULATION_PANEL_DEFAULT_WIDTH = 600
+SIMULATION_PANEL_DEFAULT_HEIGHT = 400
+
 class PanelSimulation(wx.Panel):
     def __init__(self, parent, theme, unitsize, **kargs):
         super(PanelSimulation, self).__init__(parent, **kargs)
 
         self._simu = None
         self._angle = math.pi/4
-        self.real_height = 400
-        self.real_width = 600
+        self.real_height = SIMULATION_PANEL_DEFAULT_HEIGHT
+        self.real_width = SIMULATION_PANEL_DEFAULT_WIDTH
         self._ground_y = 0
         self._theme = theme
         self._units = unitsize
@@ -41,10 +44,16 @@ class PanelSimulation(wx.Panel):
         self._max_range = 0
 
         # Set exactly this size
-        self.SetSizeHints(self.real_width,self.real_height,self.real_width,self.real_height)
+        self.SetMinSize((SIMULATION_PANEL_DEFAULT_WIDTH, SIMULATION_PANEL_DEFAULT_HEIGHT))
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_MOTION, self.OnMotion)
         self.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
+        self.Bind(wx.EVT_SIZE, self.OnResize)
+
+    def OnResize(self, event):
+        size = event.GetSize()
+        self.real_width = size[0]
+        self.real_height = size[1]
 
     def CoordsToPixels(self, (x, y)):
         return (int(x * self._units), self.real_height - (self._ground_y + int(y * self._units)))

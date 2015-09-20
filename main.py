@@ -183,13 +183,17 @@ class BulletSimuFrame(wx.Frame):
         self.panelStatus = PanelSimuStatus(self)
         self.panelSimulation = PanelSimulation(self, THEME, UNITSIZE)
 
-        sizer = wx.FlexGridSizer(rows=2, cols=2, hgap=5)
-        sizer.Add(self.panelSimulation)
-        sizer.Add(self.panelStatus, flag=wx.EXPAND)
-        sizer.Add(self.panelParams, flag=wx.EXPAND)
-        sizer.Add(self.panelObstacles, flag=wx.EXPAND)
-        sizer.AddGrowableCol(1)
-        sizer.AddGrowableRow(0)
+        subsizer = wx.BoxSizer(wx.HORIZONTAL)
+        subsizer.Add(self.panelStatus, flag=wx.EXPAND)
+        subsizer.AddStretchSpacer()
+        subsizer.Add(self.panelParams, flag=wx.EXPAND)
+        subsizer.AddStretchSpacer()
+        subsizer.Add(self.panelObstacles, flag=wx.EXPAND)
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.panelSimulation, 1, flag=wx.EXPAND)
+        sizer.Add(subsizer, flag=wx.EXPAND)
+
         self.SetSizerAndFit(sizer)
 
 if __name__ == '__main__':
