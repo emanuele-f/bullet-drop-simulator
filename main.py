@@ -60,6 +60,7 @@ class BulletSimu(wx.App):
         self.frame.panelStatus.BindStart(self.OnSimulationButton)
         self.frame.panelParams.SetVelocityAndAngle(INITIAL_VELOCITY, ToRadians(INITIAL_ANGLE))
         self.frame.panelSimulation.SetGroundHeight(GROUND_HEIGHT)
+        self.frame.panelSimulation.SetComputeMaxRange(INITIAL_VELOCITY)
         self.timer = wx.Timer(self, SIMULATION_TIMER_ID)
 
         self.Bind(wx.EVT_TIMER, self.OnSimuTick, self.timer)
@@ -97,7 +98,7 @@ class BulletSimu(wx.App):
         angle = event.angle
         v0 = event.velocity
         self.frame.panelSimulation.SetAngle(angle)
-        self.frame.panelSimulation.SetComputeMaxRange(v0, angle)
+        self.frame.panelSimulation.SetComputeMaxRange(v0)
 
     def OnSimuTick(self, event):
         t = time.time() - self.simulation.t0
@@ -163,6 +164,7 @@ class BulletSimu(wx.App):
                     pass
                 else:
                     self.frame.panelParams.SetVelocityAndAngle(v0, teta)
+                    self.frame.panelSimulation.SetAngle(teta)
                     self.frame.panelSimulation.SetTargetLocked(True)
 
     def CheckObstacleCollision(self, x, y):

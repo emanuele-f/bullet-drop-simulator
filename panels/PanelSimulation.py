@@ -157,8 +157,8 @@ class PanelSimulation(wx.Panel):
         self._obrects = obrects
         self.Refresh()
 
-    def SetComputeMaxRange(self, v0, teta):
-        mdist = BulletDrop.max_distance(v0, teta)
+    def SetComputeMaxRange(self, v0):
+        mdist = BulletDrop.max_distance(v0)
         self._max_range = self.CoordsToPixels((mdist, 0))[0]
         self.Refresh()
 
