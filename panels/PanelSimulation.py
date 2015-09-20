@@ -42,6 +42,7 @@ class PanelSimulation(wx.Panel):
         self.SetSizeHints(self.real_width,self.real_height,self.real_width,self.real_height)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_MOTION, self.OnMotion)
+        self.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
 
     def CoordsToPixels(self, (x, y)):
         return (int(x * self._units), self.real_height - (self._ground_y + int(y * self._units)))
@@ -60,8 +61,12 @@ class PanelSimulation(wx.Panel):
             self._target_x = event.GetX()
             self.Refresh()
 
+    def OnLeaveWindow(self, event):
+        if not self._target_locked:
+            self._target_x = None
+            self.Refresh()
+
     def GetTarget(self):
-        #~ self._target_locked = True
         return self.PixelsToCoords((self._target_x, 0))[0]
 
     def SetTargetLocked(self, locked):
