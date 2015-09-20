@@ -31,16 +31,21 @@ class PanelObstaclesCtrl(wx.Panel):
         self.selector = wx.ComboBox(self, style=wx.CB_DROPDOWN | wx.CB_READONLY)
         self.bt_delete = wx.Button(self, label="Elimina")
         self.bt_add = wx.Button(self, label="Aggiungi")
-        self.x = wx.TextCtrl(self)
-        self.y = wx.TextCtrl(self)
-        self.width = wx.TextCtrl(self)
-        self.height = wx.TextCtrl(self)
-        self.obstacles = collections.OrderedDict()
+        self.tc_x = wx.TextCtrl(self)
+        self.tc_y = wx.TextCtrl(self)
+        self.tc_width = wx.TextCtrl(self)
+        self.tc_height = wx.TextCtrl(self)
+        self._obstacles = collections.OrderedDict()
         self._obi = 0
+        self._selection = -1
 
         self.bt_add.Bind(wx.EVT_BUTTON, self.OnObstacleAdd)
         self.bt_delete.Bind(wx.EVT_BUTTON, self.OnObstacleDelete)
         self.selector.Bind(wx.EVT_COMBOBOX, self.OnSelection)
+        self.tc_x.Bind(wx.EVT_TEXT, lambda ev: self._ObPropSetter(0))
+        self.tc_y.Bind(wx.EVT_TEXT, lambda ev: self._ObPropSetter(1))
+        self.tc_width.Bind(wx.EVT_TEXT, lambda ev: self._ObPropSetter(2))
+        self.tc_height.Bind(wx.EVT_TEXT, lambda ev: self._ObPropSetter(3))
         self._SetControlsEnabled(False)
 
         # Horizontal sizer
@@ -52,13 +57,13 @@ class PanelObstaclesCtrl(wx.Panel):
         # Table sizer
         ts = wx.GridSizer(rows=4, cols=2)
         ts.Add(wx.StaticText(self, label="x"))
-        ts.Add(self.x)
+        ts.Add(self.tc_x)
         ts.Add(wx.StaticText(self, label="y"))
-        ts.Add(self.y)
+        ts.Add(self.tc_y)
         ts.Add(wx.StaticText(self, label="larghezza"))
-        ts.Add(self.width)
+        ts.Add(self.tc_width)
         ts.Add(wx.StaticText(self, label="altezza"))
-        ts.Add(self.height)
+        ts.Add(self.tc_height)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(hs)
@@ -74,16 +79,16 @@ class PanelObstaclesCtrl(wx.Panel):
     def _SetControlsEnabled(self, enabled):
         if enabled:
             self.bt_delete.Enable()
-            self.x.Enable()
-            self.y.Enable()
-            self.width.Enable()
-            self.height.Enable()
+            self.tc_x.Enable()
+            self.tc_y.Enable()
+            self.tc_width.Enable()
+            self.tc_height.Enable()
         else:
             self.bt_delete.Disable()
-            self.x.Disable()
-            self.y.Disable()
-            self.width.Disable()
-            self.height.Disable()
+            self.tc_x.Disable()
+            self.tc_y.Disable()
+            self.tc_width.Disable()
+            self.tc_height.Disable()
 
     def _GetSelectedObstacleId(self):
         val = self.selector.GetValue()
@@ -92,6 +97,22 @@ class PanelObstaclesCtrl(wx.Panel):
             return -1
         oid = int(val[i+len(KEY_DELIMITER):])
         return oid
+
+    def _ObPropSetter(self, propid):
+        assert self._selection != -1, "No selection!"
+        ob = self._obstacles[self._selection]
+
+        try:
+            if propid == 0:
+                ob[0] = int(self.tc_x.GetValue())
+            elif propid == 1:
+                ob[1] = int(self.tc_y.GetValue())
+            elif propid == 2:
+                ob[2] = int(self.tc_width.GetValue())
+            elif propid == 3:
+                ob[3] = int(self.tc_height.GetValue())
+        except ValueError:
+            pass
 
     """Select an obstacle programmatically."""
     def _SelectorOn(self, oid):
@@ -110,7 +131,7 @@ class PanelObstaclesCtrl(wx.Panel):
 
         self.selector.Clear()
         self.selector.Append("")
-        for key, ob in self.obstacles.items():
+        for key, ob in self._obstacles.items():
             self.selector.Append("obstacle%s%d" % (KEY_DELIMITER, key))
 
         if restore and curval:
@@ -129,22 +150,35 @@ class PanelObstaclesCtrl(wx.Panel):
         else:
             self._selection = obi
             self._SetControlsEnabled(True)
+            # show data set
+            ob = self._obstacles[obi]
+            self.tc_x.SetValue(str(ob[0]))
+            self.tc_y.SetValue(str(ob[1]))
+            self.tc_width.SetValue(str(ob[2]))
+            self.tc_height.SetValue(str(ob[3]))
 
     def OnObstacleAdd(self, event):
         obi = self._obi
         self._obi += 1
 
-        self.obstacles[obi] = [0,0,0,0]
+        self._obstacles[obi] = [0,0,0,0]
         self._UpdateSelector(restore=False)
         self._SelectorOn(obi)
 
     def OnObstacleDelete(self, event):
         sel = self._GetSelectedObstacleId()
         if sel != -1:
-            self.obstacles.pop(sel)
+            self._obstacles.pop(sel)
             self._UpdateSelector()
 
     def OnSelection(self, event):
         self._ObstacleSelection(self._GetSelectedObstacleId())
+
+    """Builds rects like (xi, yi, xf, yi) from obstacles."""
+    def GetObstaclesRects(self):
+        l = []
+        for ob in self._obstacles:
+            l.append((ob[0], ob[1], ob[0]+ob[2], ob[1]+ob[3]))
+        return l
 
 __all__ = ["PanelObstaclesCtrl"]
