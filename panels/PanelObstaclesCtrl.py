@@ -21,8 +21,10 @@
 
 import collections
 import wx
+import wx.lib.newevent
 
 KEY_DELIMITER = "-"
+_MyEventObstacles, MY_EVT_OBSTACLES = wx.lib.newevent.NewEvent()
 
 class PanelObstaclesCtrl(wx.Panel):
     def __init__(self, parent, **kargs):
@@ -113,6 +115,12 @@ class PanelObstaclesCtrl(wx.Panel):
                 ob[3] = int(self.tc_height.GetValue())
         except ValueError:
             pass
+        else:
+            self._NotifyObstaclesChange()
+
+    def _NotifyObstaclesChange(self):
+        evt = _MyEventObstacles()
+        wx.PostEvent(self, evt)
 
     """Select an obstacle programmatically."""
     def _SelectorOn(self, oid):
@@ -141,6 +149,8 @@ class PanelObstaclesCtrl(wx.Panel):
             else:
                 # restore selection
                 self._SelectorOn(cursel)
+
+        self._NotifyObstaclesChange()
 
     """Trigger information show for given obstacle."""
     def _ObstacleSelection(self, obi):
@@ -177,8 +187,8 @@ class PanelObstaclesCtrl(wx.Panel):
     """Builds rects like (xi, yi, xf, yi) from obstacles."""
     def GetObstaclesRects(self):
         l = []
-        for ob in self._obstacles:
+        for ob in self._obstacles.values():
             l.append((ob[0], ob[1], ob[0]+ob[2], ob[1]+ob[3]))
         return l
 
-__all__ = ["PanelObstaclesCtrl"]
+__all__ = ["PanelObstaclesCtrl", "MY_EVT_OBSTACLES"]

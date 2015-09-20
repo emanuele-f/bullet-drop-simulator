@@ -20,7 +20,10 @@
 #
 
 # TODO
+#   - Draw markers
+#   - Add numeric values validators
 #   - Import and parse initial obstacles
+#   - Modify unit scale from UI
 
 import time
 import wx
@@ -29,6 +32,7 @@ from panels import PanelObstaclesCtrl
 from panels import PanelSimuParameters
 from panels import PanelSimuStatus
 from panels import PanelSimulation
+from panels.PanelObstaclesCtrl import MY_EVT_OBSTACLES
 from structures import Simulation
 from utils import *
 from constraints import *
@@ -55,6 +59,7 @@ class BulletSimu(wx.App):
         self.frame.panelSimulation.SetGroundHeight(GROUND_HEIGHT)
         self.timer = wx.Timer(self, SIMULATION_TIMER_ID)
         self.Bind(wx.EVT_TIMER, self.OnSimuTick, self.timer)
+        self.frame.panelObstacles.Bind(MY_EVT_OBSTACLES, self.OnObstaclesChange)
 
         self.frame.Center()
         self.frame.Show()
@@ -103,34 +108,32 @@ class BulletSimu(wx.App):
             finished = True
         elif y <= 0 and vy <= 0:
             finished = True
+        elif self.CheckObstacleCollision(x, y):
+            # Collision detected
+            finished = True
         else:
             finished = False
-
-        self.simulation.x = x
-        self.simulation.y = y
-        self.simulation.vy = vy
-
-        self.simulation.track.append((x, y))
-
-        # Check collision
-        #~ if not finished and get_collision(SIMULATION.v0, SIMULATION.teta0, SIMULATION.obstacles, (newx, newy)):
-            #~ SIMULATION.tf = tcur
-        #~ elif finished:
-            #~ SIMULATION.x = SIMULATION.v0*SIMULATION.v0 * math.sin(2*SIMULATION.teta0) / abs(GRAVITY_ACCELERATION)
-            #~ SIMULATION.y = 0
-            #~ SIMULATION.tf = tcur
-        #~ else:
-            #~ SIMULATION.x = newx
-            #~ SIMULATION.y = newy
-            #~ SIMULATION.vy = newvy
 
         if finished:
             self.simulation.Stop(t)
             self.timer.Stop()
             self.frame.panelStatus.SetStatus("Reset")
             self.state = SIMULATION_STATE_FINISHED
+        else:
+            self.simulation.x = x
+            self.simulation.y = y
+            self.simulation.vy = vy
+            self.simulation.track.append((x, y))
 
         self.frame.panelSimulation.Refresh()
+
+    def OnObstaclesChange(self, event):
+        obs = self.frame.panelObstacles.GetObstaclesRects()
+        print obs
+
+    def CheckObstacleCollision(self, x, y):
+        # TODO implement
+        return None
 
 class BulletSimuFrame(wx.Frame):
     def __init__(self, **kargs):
