@@ -35,6 +35,7 @@ class PanelObstaclesCtrl(wx.Panel):
         self.bt_add = wx.Button(self, label="Aggiungi")
         self.tc_x = wx.TextCtrl(self)
         self.tc_y = wx.TextCtrl(self)
+        self.tc_y.Disable()
         self.tc_width = wx.TextCtrl(self)
         self.tc_height = wx.TextCtrl(self)
         self._obstacles = collections.OrderedDict()
@@ -82,7 +83,7 @@ class PanelObstaclesCtrl(wx.Panel):
         if enabled:
             self.bt_delete.Enable()
             self.tc_x.Enable()
-            self.tc_y.Enable()
+            #~ self.tc_y.Enable()
             self.tc_width.Enable()
             self.tc_height.Enable()
         else:
@@ -171,7 +172,7 @@ class PanelObstaclesCtrl(wx.Panel):
         obi = self._obi
         self._obi += 1
 
-        self._obstacles[obi] = [0,0,0,0]
+        self._obstacles[obi] = [4,0,2,2]
         self._UpdateSelector(restore=False)
         self._SelectorOn(obi)
 

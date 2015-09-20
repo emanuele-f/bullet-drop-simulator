@@ -208,7 +208,11 @@ class BulletSimu(wx.App):
        eventuali ostacoli.
     """
     def _AutoCalculateParamsHard(self, xtarget):
-        # TODO
+        for ob in self.obstacles:
+            for i in range(2):
+                point = ob[i*2+0], ob[i*2+0]
+            v0_teta = get_v0_teta(xi, y, y0, xtarget)
+            nymax = get_max_y(*v0_teta)
         self._AutoCalculateParamsSimple(xtarget)
 
     def CheckObstaclesCollision(self, x, y):

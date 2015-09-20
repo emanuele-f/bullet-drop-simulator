@@ -49,7 +49,7 @@ class BulletDrop:
     @staticmethod
     def max_height(v0, teta):
         sinteta = math.sin(teta)
-        return v0**2 * sinteta * sinteta / (-2. * GRAVITY_ACCELERATION)
+        return v0**2 * sinteta**2 / (-2. * GRAVITY_ACCELERATION)
 
     """Calcola la gittata massima del moto."""
     @staticmethod
