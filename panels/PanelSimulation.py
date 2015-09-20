@@ -79,6 +79,9 @@ class PanelSimulation(wx.Panel):
             self._target_x = None
             self.Refresh()
 
+    def SetTarget(self, target):
+        self._target_x = self.CoordsToPixels((target, 0))[0]
+
     def GetTarget(self):
         if not self._target_x:
             return None
@@ -89,6 +92,7 @@ class PanelSimulation(wx.Panel):
             self._target_locked = True
         else:
             self._target_locked = False
+        self.Refresh()
 
     def IsTargetLocked(self):
         return self._target_locked

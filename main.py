@@ -35,7 +35,7 @@ from panels import PanelSimulation
 from structures import Simulation
 
 from panels.PanelObstaclesCtrl import MY_EVT_OBSTACLES
-from panels.PanelSimuParameters import MY_EVT_PARAMETERS
+from panels.PanelSimuParameters import MY_EVT_PARAMETERS, MY_EVT_TARGET
 
 from utils import *
 from constraints import *
@@ -46,6 +46,9 @@ SIMULATION_TIMER_ID = 1
 SIMULATION_STATE_READY = 1
 SIMULATION_STATE_RUNNING = 2
 SIMULATION_STATE_FINISHED = 3
+
+SIMULATION_ACCELL_ID_ESCAPE = wx.NewId()
+SIMULATION_ACCELL_ID_SPACEBAR = wx.NewId()
 
 class BulletSimu(wx.App):
     def __init__(self, **kargs):
@@ -64,13 +67,32 @@ class BulletSimu(wx.App):
         self.timer = wx.Timer(self, SIMULATION_TIMER_ID)
 
         self.Bind(wx.EVT_TIMER, self.OnSimuTick, self.timer)
-        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyPress)
         self.frame.panelObstacles.Bind(MY_EVT_OBSTACLES, self.OnObstaclesChange)
         self.frame.panelSimulation.Bind(wx.EVT_LEFT_DOWN, self.OnSimuClick)
         self.frame.panelParams.Bind(MY_EVT_PARAMETERS, self.OnSimuParameters)
+        self.frame.panelParams.Bind(MY_EVT_TARGET, self.OnSimuTarget)
+
+        # keybinding stuff
+        self.Bind(wx.EVT_MENU, self.OnAccelleratorKey, id=SIMULATION_ACCELL_ID_ESCAPE)
+        self.Bind(wx.EVT_MENU, self.OnAccelleratorKey, id=SIMULATION_ACCELL_ID_SPACEBAR)
+        accel_tbl = wx.AcceleratorTable([
+            (wx.ACCEL_NORMAL, wx.WXK_ESCAPE, SIMULATION_ACCELL_ID_ESCAPE ),
+            (wx.ACCEL_NORMAL, wx.WXK_SPACE, SIMULATION_ACCELL_ID_SPACEBAR )
+        ])
+        self.frame.SetAcceleratorTable(accel_tbl)
 
         self.frame.Center()
         self.frame.Show()
+        return True
+
+    def OnAccelleratorKey(self, event):
+        eid = event.GetId()
+        if eid == SIMULATION_ACCELL_ID_ESCAPE:
+            self.Exit()
+        elif eid == SIMULATION_ACCELL_ID_SPACEBAR:
+            self._StartButtonLogic()
+        else:
+            return False
         return True
 
     def _StartButtonLogic(self):
@@ -97,11 +119,6 @@ class BulletSimu(wx.App):
 
     def OnSimulationButton(self, event):
         self._StartButtonLogic()
-
-    def OnKeyPress(self, event):
-        keycode = event.GetKeyCode()
-        if keycode == wx.WXK_SPACE:
-            self._StartButtonLogic()
 
     def OnSimuParameters(self, event):
         angle = event.angle
@@ -166,15 +183,33 @@ class BulletSimu(wx.App):
         else:
             xtarget = self.frame.panelSimulation.GetTarget()
             if xtarget:
-                v0 = self.frame.panelParams.GetVelocityAndAngle()[0]
-                teta = BulletDrop.teta_by_v0_xf(v0, xtarget)
-                if not teta:
-                    # not enough power
-                    pass
-                else:
-                    self.frame.panelParams.SetVelocityAndAngle(v0, teta)
-                    self.frame.panelSimulation.SetAngle(teta)
-                    self.frame.panelSimulation.SetTargetLocked(True)
+                self._AutoCalculateParamsHard(xtarget)
+
+    def OnSimuTarget(self, event):
+        self.frame.panelSimulation.SetTarget(event.target)
+        self.frame.panelSimulation.SetTargetLocked(True)
+        self._AutoCalculateParamsSimple(event.target)
+
+    """Determina velocità e angolo per arrivare al punto stabilito, senza
+       considerare ventuali ostacoli.
+    """
+    def _AutoCalculateParamsSimple(self, xtarget):
+        v0 = self.frame.panelParams.GetVelocityAndAngle()[0]
+        teta = BulletDrop.teta_by_v0_xf(v0, xtarget)
+        if not teta:
+            # Not enough power
+            return
+
+        self.frame.panelParams.SetVelocityAndAngle(v0, teta)
+        self.frame.panelSimulation.SetAngle(teta)
+        self.frame.panelSimulation.SetTargetLocked(True)
+
+    """Determina velocità e angolo per arrivare al punto stabilito evitando
+       eventuali ostacoli.
+    """
+    def _AutoCalculateParamsHard(self, xtarget):
+        # TODO
+        self._AutoCalculateParamsSimple(xtarget)
 
     def CheckObstaclesCollision(self, x, y):
         for ob in self.obstacles:

@@ -38,7 +38,7 @@ class UniformMotion:
 class UniformAccelleration:
     @staticmethod
     def x(x0, vx0, a, t):
-        return x0 + vx0 * t + 0.5 * a * t*t
+        return x0 + vx0 * t + 0.5 * a * t**2
 
     @staticmethod
     def vx(vx0, a, t):
@@ -49,7 +49,7 @@ class BulletDrop:
     @staticmethod
     def max_height(v0, teta):
         sinteta = math.sin(teta)
-        return (v0 * v0) * sinteta * sinteta / (-2. * GRAVITY_ACCELERATION)
+        return v0**2 * sinteta * sinteta / (-2. * GRAVITY_ACCELERATION)
 
     """Calcola la gittata massima del moto."""
     @staticmethod
@@ -85,5 +85,10 @@ class BulletDrop:
             return None
         teta = 0.5 * math.asin(sin2teta)
         return teta
+
+    """Calcola, dati v0 e teta, il punto finale della traiettoria."""
+    @staticmethod
+    def xf_by_v0_teta(v0, teta):
+        return 1. * v0**2 * math.sin(2*teta) / (-GRAVITY_ACCELERATION)
 
 __all__ = ["UniformMotion", "UniformAccelleration", "BulletDrop"]
