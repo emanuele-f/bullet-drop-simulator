@@ -19,7 +19,6 @@
 #  MA 02110-1301, USA.
 #
 
-import collections
 import wx
 import wx.lib.newevent
 
@@ -30,7 +29,7 @@ class PanelObstaclesCtrl(wx.Panel):
     def __init__(self, parent, **kargs):
         super(PanelObstaclesCtrl, self).__init__(parent, **kargs)
 
-        self.selector = wx.ComboBox(self, style=wx.CB_DROPDOWN | wx.CB_READONLY)
+        self.selector = wx.ComboBox(self, style=wx.CB_DROPDOWN | wx.CB_READONLY | wx.CB_SORT)
         self.bt_delete = wx.Button(self, label="Elimina")
         self.bt_add = wx.Button(self, label="Aggiungi")
         self.tc_x = wx.TextCtrl(self)
@@ -38,7 +37,7 @@ class PanelObstaclesCtrl(wx.Panel):
         self.tc_y.Disable()
         self.tc_width = wx.TextCtrl(self)
         self.tc_height = wx.TextCtrl(self)
-        self._obstacles = collections.OrderedDict()
+        self._obstacles = {}
         self._obi = 0
         self._selection = -1
 
@@ -202,5 +201,15 @@ class PanelObstaclesCtrl(wx.Panel):
             assert 0, "No obstacle found for rect %s" % str(rect)
 
         self._SelectorOn(key)
+
+    """Load obstacles from the list"""
+    def FromList(self, obs):
+        self._obstacles = {}
+
+        for ob in obs:
+            self._obstacles[self._obi] = list(ob)
+            self._obi += 1
+
+        self._UpdateSelector(restore=False)
 
 __all__ = ["PanelObstaclesCtrl", "MY_EVT_OBSTACLES"]

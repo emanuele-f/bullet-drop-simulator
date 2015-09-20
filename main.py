@@ -21,8 +21,6 @@
 
 # TODO
 #   - beautify and order GUI
-#   - Add numeric values validators
-#   - Import and parse initial obstacles
 #   - Modify unit scale from UI
 
 import time
@@ -80,10 +78,22 @@ class BulletSimu(wx.App):
             (wx.ACCEL_NORMAL, wx.WXK_SPACE, SIMULATION_ACCELL_ID_SPACEBAR )
         ])
         self.frame.SetAcceleratorTable(accel_tbl)
+        self.LoadInitialObstacles()
 
         self.frame.Center()
         self.frame.Show()
         return True
+
+    """Read INITIAL_OBSTACLES from constraints.py"""
+    def LoadInitialObstacles(self):
+        obstacles = []
+        for ob in INITIAL_OBSTACLES:
+            assert len(ob) == 4, "Obstacle descriptor must be like (x, y, w, h)"
+            assert ob[1] == 0, "Only '0' is supported yet"
+            for dim in ob:
+                assert isinstance(dim, float) or isinstance(dim, int), "A numeric value is required, not %s" % str(dim)
+            obstacles.append(ob)
+        self.frame.panelObstacles.FromList(obstacles)
 
     def OnAccelleratorKey(self, event):
         eid = event.GetId()
