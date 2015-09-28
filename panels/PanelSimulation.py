@@ -49,6 +49,8 @@ class PanelSimulation(wx.Panel):
         self.Bind(wx.EVT_MOTION, self.OnMotion)
         self.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
         self.Bind(wx.EVT_SIZE, self.OnResize)
+		# Disable this event: we are using double buffered drawing -> buffered bitmap overwrites the whole panel
+        self.Bind(wx.EVT_ERASE_BACKGROUND, lambda ev: 0)
 
     def OnResize(self, event):
         size = event.GetSize()
@@ -98,7 +100,7 @@ class PanelSimulation(wx.Panel):
         return self._target_locked
 
     def OnPaintDuringSimulation(self):
-        dc = wx.PaintDC(self)
+        dc = wx.BufferedPaintDC(self)
         dc.Clear()
         self._DrawGround(dc)
         self._DrawObstacles(dc)
@@ -106,7 +108,7 @@ class PanelSimulation(wx.Panel):
         self._DrawBall(dc)
 
     def OnPaintDuringSetup(self):
-        dc = wx.PaintDC(self)
+        dc = wx.BufferedPaintDC(self)
         dc.Clear()
         self._DrawGround(dc)
         self._DrawObstacles(dc)
