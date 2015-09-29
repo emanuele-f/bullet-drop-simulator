@@ -27,6 +27,8 @@ GROUND_HEIGHT = 50
 
 UNITSIZE = 40
 SIMULATION_FPS = 40
+# Skip some frame visualization when simulation is running slow
+FRAME_SKIP = True
 
 # List of initial obstacles, in the form (x, y, w, h)
 #~ INITIAL_OBSTACLES = ((7,0,2,1), (3,0,3,3))
