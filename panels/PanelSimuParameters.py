@@ -49,7 +49,7 @@ class PanelSimuParameters(wx.Panel):
         ts.Add(wx.StaticText(self, label="angolo"))
         ts.Add(self.tc_angle)
         ts.Add(wx.StaticText(self, label="gradi"))
-        ts.Add(wx.StaticText(self, label="velocità"))
+        ts.Add(wx.StaticText(self, label=u"velocità"))
         ts.Add(self.tc_v0)
         ts.Add(wx.StaticText(self, label="u/s"))
         ts.Add(wx.StaticText(self, label="gittata corrente"))
