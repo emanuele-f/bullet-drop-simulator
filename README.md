@@ -1,6 +1,9 @@
 # bullet-drop-simulator
 Un progetto per la simulazione fisica del moto dei proiettili.
+
 Il simulatore è scritto in Python 2 ed utilizza la libreria wxPython 3 per la gestione del contenuto grafico.
+
+Le formule della fisica utilizzate sono raggruppate nel sorgente [formula.py](formula.py)
 
 Features
 --------
@@ -21,14 +24,13 @@ Si rimanda ai siti ufficiali:
 
 Una volta installato il necessario, il simulatore si avvia posizionandosi nella parent directory e digitando il comando *python main.py*
 
-In alternativa, limitatamente al sistema operativo Windows, saranno disponibili a breve eseguibili standalone, avviabili anche senza ambiente python.
+In alternativa, limitatamente al sistema operativo Windows, è disponibile l'eseguibile precompilato per la versione di sistemi a 32 bit. E' necessario solamente [scaricare il file](bin/BulletDropSimulator-x86.exe?raw=true) ed eseguirlo.
 
 Miglioramenti
 -------------
 Segue la lista di alcuni miglioramenti che potrebbero essere apportati in futuro:
-- Calcolo automatico di velocità e angolo per la data gittata in presenza di ostacoli "fluttuanti". Il problema sembra
-  richiedere l'utilizzo di strumenti di risoluzione di sistemi di disequazioni lineari più gestione OR logico:
-  Per ogni ostacolo, si devono considerare i due punti superiori (2 disequazioni) e i due inferiori
-  tenendo conto della possibilità che il vertice della parabola possa "appartenervi" (3 disequazioni + OR)
+- Calcolo automatico di velocità e angolo per la data gittata in presenza di ostacoli "fluttuanti".
+  Per ogni ostacolo, si devono considerare i due punti superiori (richiede 2 disequazioni) e i due inferiori
+  tenendo conto della possibilità che il vertice della parabola possa "appartenervi" (richiede 3 disequazioni)
 - Generalizzazione delle formule in modo indipendente dal punto iniziale, permettendo di fare lanci sia "avanti" che "indietro"
 - Utilizzo di immagini da animare in sostituzione alle primitive grafiche per la rappresentazione degli oggetti
