@@ -113,11 +113,11 @@ class BulletSimu(wx.App):
             self.frame.panelParams.Disable()
             self.frame.panelObstacles.Disable()
             self.frame.panelSimulation.SetSimulation(self.simulation)
-            self.timer.Start(self._tickrate * 1000, oneShot=True)
+            self.timer.Start(self._tickrate * 1000, oneShot=False)
             self._oldt = 0
             self.frame.panelStatus.SetStatus("Stop")
             self.state = SIMULATION_STATE_RUNNING
-            print "Will tick every %d ms" % int(self._tickrate * 1000)
+            #~ print "Will tick every %d ms" % int(self._tickrate * 1000)
         else: # SIMULATION_STATE_RUNNING | SIMULATION_STATE_FINISHED
             self.simulation.Stop(curtime)
             self.frame.panelParams.Enable()
@@ -167,18 +167,15 @@ class BulletSimu(wx.App):
 
         # only update graphics if we are not running slow
         if finished or not self._oldt or (t - self._oldt) < self._tickrate:
-            self.frame.panelSimulation.Refresh()
+            self.frame.panelSimulation.UpdateDrawing()
             self.frame.panelStatus.UpdateData(
                 self.simulation.x,
                 self.simulation.y,
                 self.simulation.vx,
                 self.simulation.vy,
                 t)
-            
-        if not finished:
-            t = time.time() - self.simulation.t0 - self._oldt
-            # reset new timeout using current value as a reference, with a 10% advance
-            self.timer.Start(max((self._tickrate - t)*1000*0.9, 0), oneShot=True)
+        #~ else:
+            #~ print "too slow!"
         
         self._oldt = time.time() - self.simulation.t0
 

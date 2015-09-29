@@ -42,6 +42,7 @@ class PanelSimulation(wx.Panel):
         self._target_locked = False
         self.SetBackgroundColour(self._theme['background'])
         self._max_range = 0
+        self._Buffer = None
 
         # Set exactly this size
         self.SetMinSize((SIMULATION_PANEL_DEFAULT_WIDTH, SIMULATION_PANEL_DEFAULT_HEIGHT))
@@ -51,11 +52,28 @@ class PanelSimulation(wx.Panel):
         self.Bind(wx.EVT_SIZE, self.OnResize)
 		# Disable this event: we are using double buffered drawing -> buffered bitmap overwrites the whole panel
         self.Bind(wx.EVT_ERASE_BACKGROUND, lambda ev: 0)
+        self._SetupBuffer((self.real_width, self.real_height))
 
     def OnResize(self, event):
         size = event.GetSize()
         self.real_width = size[0]
         self.real_height = size[1]
+        self._SetupBuffer(size)
+        self.UpdateDrawing()
+    
+    def _SetupBuffer(self, size):
+        # custom bitmap image to be used as a double buffer
+        self._Buffer = wx.EmptyBitmap(*size)
+        
+    """Use this function to update the Panel graphics."""
+    def UpdateDrawing(self):
+        dc = wx.MemoryDC()
+        dc.SelectObject(self._Buffer)
+        self.Draw(dc)
+        # need to get rid of the MemoryDC before Update() is called
+        del dc
+        self.Refresh()
+        self.Update()
 
     def CoordsToPixels(self, (x, y)):
         return (int(x * self._units), self.real_height - (self._ground_y + int(y * self._units)))
@@ -63,23 +81,17 @@ class PanelSimulation(wx.Panel):
     def PixelsToCoords(self, (x, y)):
         return (x * 1. / self._units, (self.real_height - self._ground_y - y) * 1. / self._units)
 
-    def OnPaint(self, event):
-        if self._simu:
-            self.OnPaintDuringSimulation()
-        else:
-            self.OnPaintDuringSetup()
-
     def OnMotion(self, event):
         if not self._target_locked:
             x = event.GetX()
             if x <= self._max_range:
                 self._target_x = x
-                self.Refresh()
+                self.UpdateDrawing()
 
     def OnLeaveWindow(self, event):
         if not self._target_locked:
             self._target_x = None
-            self.Refresh()
+            self.UpdateDrawing()
 
     def SetTarget(self, target):
         self._target_x = self.CoordsToPixels((target, 0))[0]
@@ -94,21 +106,29 @@ class PanelSimulation(wx.Panel):
             self._target_locked = True
         else:
             self._target_locked = False
-        self.Refresh()
+        self.UpdateDrawing()
 
     def IsTargetLocked(self):
         return self._target_locked
+        
+    def OnPaint(self, event):
+        # uses our buffer bitmap to perform a double buffer operation
+        dc = wx.BufferedPaintDC(self, self._Buffer)
+        
+    def Draw(self, dc):
+        if self._simu:
+            self.DrawDuringSimulation(dc)
+        else:
+            self.DrawDuringSetup(dc)
 
-    def OnPaintDuringSimulation(self):
-        dc = wx.BufferedPaintDC(self)
+    def DrawDuringSimulation(self, dc):
         dc.Clear()
         self._DrawGround(dc)
         self._DrawObstacles(dc)
         self._DrawMarker(dc, self._theme["maxrange"], self._max_range)
         self._DrawBall(dc)
 
-    def OnPaintDuringSetup(self):
-        dc = wx.BufferedPaintDC(self)
+    def DrawDuringSetup(self, dc):
         dc.Clear()
         self._DrawGround(dc)
         self._DrawObstacles(dc)
@@ -157,24 +177,24 @@ class PanelSimulation(wx.Panel):
             self._simu = simulation
         else:
             self._simu = None
-        self.Refresh()
+        self.UpdateDrawing()
 
     def SetAngle(self, angle):
         assert not self._simu, "Cannot set angle during simulation"
         if angle > 0 and angle < math.pi/2.:
             self._angle = angle
-            self.Refresh()
+            self.UpdateDrawing()
 
     def SetGroundHeight(self, height):
         self._ground_y = height
 
     def SetObstacles(self, obrects):
         self._obrects = obrects
-        self.Refresh()
+        self.UpdateDrawing()
 
     def SetComputeMaxRange(self, v0):
         mdist = BulletDrop.max_distance(v0)
         self._max_range = self.CoordsToPixels((mdist, 0))[0]
-        self.Refresh()
+        self.UpdateDrawing()
 
 __all__ = ["PanelSimulation"]
