@@ -34,6 +34,8 @@ INITIAL_OBSTACLES = ()
 
 # Color "theme"
 THEME = {
+    "arrow" : (255,0,0),
+    "arrow_width" : 2,
     "track" : (255,50,50),
     "ramp" : (50,50,50),
     "ground" : (0,0,255),
