@@ -271,11 +271,13 @@ class BulletSimuFrame(wx.Frame):
         self.panelSimulation = PanelSimulation(self, THEME, UNITSIZE)
 
         subsizer = wx.BoxSizer(wx.HORIZONTAL)
+        subsizer.AddStretchSpacer()
         subsizer.Add(self.panelParams, flag=wx.EXPAND|wx.ALL, border=Measures.PANEL_BOX_MARGIN)
         subsizer.AddStretchSpacer()
         subsizer.Add(self.panelStatus, flag=wx.EXPAND|wx.ALL, border=Measures.PANEL_BOX_MARGIN)
         subsizer.AddStretchSpacer()
         subsizer.Add(self.panelObstacles, flag=wx.EXPAND|wx.ALL, border=Measures.PANEL_BOX_MARGIN)
+        subsizer.AddStretchSpacer()
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.panelSimulation, 1, flag=wx.EXPAND)
