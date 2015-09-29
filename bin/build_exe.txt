@@ -1,0 +1,14 @@
+Requirements:
+	Pyinstaller 2.1
+	pywin32: http://sourceforge.net/projects/pywin32/
+	MSVCP90.dll : Install visual C++ 2008 Redistributable
+
+How to:
+	*cd to Pyinstaller directory
+	*cp project to .\
+	*cd project\bin
+	..\..\utils\Makespec.py -F -w ..\main.py
+	
+	*Edit main.spec: not required, maybe in future: add extra data
+		a.datas += [('assets\\about.png', '..\\assets\\about.png', 'DATA')]
+	..\..\utils\Build.py main.spec
