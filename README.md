@@ -22,7 +22,7 @@ Si rimanda ai siti ufficiali:
 - https://www.python.org/
 - http://www.wxpython.org/
 
-Una volta installato il necessario, il simulatore si avvia posizionandosi nella parent directory e digitando il comando *python main.py*
+Una volta installato il necessario, il simulatore si avvia posizionandosi nella directory del progetto e digitando il comando *python main.py*
 
 In alternativa, limitatamente al sistema operativo Windows, è disponibile l'eseguibile precompilato per la versione di sistemi a 32 bit. E' necessario solamente [scaricare il file](bin/BulletDropSimulator-x86.exe?raw=true) ed eseguirlo.
 
