@@ -116,6 +116,8 @@ class PanelSimulation(wx.Panel):
         dc = wx.BufferedPaintDC(self, self._Buffer)
         
     def Draw(self, dc):
+        dc.SetBackground(wx.Brush(self._theme['background']))
+
         if self._simu:
             self.DrawDuringSimulation(dc)
         else:
